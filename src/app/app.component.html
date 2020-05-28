@@ -4,13 +4,16 @@
     <label for="departure_airport">Departure airport:</label>
     <input list="departure_airport_list" formControlName="departure_airport" type="text"/>
     <label for="departure_date">Departure date:</label>
-    <input type="date" id="departure_date" formControlName="departure_date" [min]="dateOf() | date:'yyyy-MM-dd'"/>
+    <input type="date" id="departure_date" formControlName="departure_date"
+           [min]="today() | date:'yyyy-MM-dd'"
+           [max]="DateOrTodayPlus(flightForm.value.arrival_date, 365) | date:'yyyy-MM-dd'"/>
   </div>
   <div>
     <label for="arrival_airport">Arrival airport:</label>
     <input list="arrival_airport_list" formControlName="arrival_airport" type="text"/>
     <label for="arrival_date">Arrival date:</label>
-    <input type="date" id="arrival_date" formControlName="arrival_date" [min]="dateOf(flightForm.value.departure_date) | date:'yyyy-MM-dd'"/>
+    <input type="date" id="arrival_date" formControlName="arrival_date"
+           [min]="dateOrToday(flightForm.value.departure_date) | date:'yyyy-MM-dd'"/>
   </div>
   <button type="submit">Submit</button>
 </form>
@@ -24,9 +27,7 @@
 </datalist>
 
 <!-- Debug messages -->
-<div *ngIf="messages.length">
   <h2>Debug Messages</h2>
   <button class="clear"
           (click)="messages=[]">clear</button>
   <div *ngFor='let message of messages'> {{message}} </div>
-</div>

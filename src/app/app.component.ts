@@ -14,15 +14,15 @@ export class AppComponent {
 
   title = 'Tayir';
   airports : Airport[] = []
-  messages : string[] = []
+  private messages : string[] = []
   flightForm: FormGroup
 
   constructor(private http: HttpClient, public formBuilder: FormBuilder) {
     this.flightForm = this.formBuilder.group({
         departure_airport: '',
         arrival_airport: '',
-        departure_date: new Date(),
-        arrival_date: new Date(),
+        departure_date: '',
+        arrival_date: '',
     })
   }
 
@@ -36,18 +36,33 @@ export class AppComponent {
     )).subscribe(
       (data: string) => {
         this.airports = data.replace(/\"/g, '').split("\n").map((csvLine: string) => new Airport(csvLine));
-        this.messages.push(this.airports.length + " airports fetched");
+        this.log(this.airports.length + " airports fetched");
       }
     )
   }
 
   private searchPlane(formData): void {
-    this.messages.push("TODO: search for a plane for " + formData.departure_date);
+    this.log("TODO: test input then search for a plane for " + formData.departure_date
+    + " to " + formData.arrival_date + " from " + formData.departure_airport
+    + " to " + formData.arrival_airport);
   }
-  private dateOf(date?: Date): Date {
-    if (date != null)
+  private today(): Date {
+    return new Date();
+  }
+  private dateOrToday(dateStr: string): Date {
+    var date = new Date(dateStr);
+    if (date.getFullYear() > 1970)
       return new Date(date);
     return new Date();
+  }
+  private DateOrTodayPlus(dateStr: string, days: number): Date {
+    var date = new Date(dateStr);
+    var today = new Date();
+    if (date.getFullYear() > 1970)
+      return new Date(date);
+    var result: Date = new Date();
+    result.setDate(result.getDate()+days);
+    return result;
   }
   private log(message: string): void {
     this.messages.push(message);
